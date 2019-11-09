@@ -1,0 +1,9 @@
+.card-option:hover{
+    transform: scale(1.1);
+
+    cursor: pointer;
+}
+
+.card-option{
+    transition: transform .5s ease;
+}
