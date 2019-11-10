@@ -4,28 +4,36 @@ class ApplicationController < Sinatra::Base
     set :views, "app/views"
     set :public_dir, "app/public"
   end
+  # use api helpers to generate responses in a specific format
   helpers ApiHelpers
 
-  #return the index
+  # handle not  found error by redirecting to /
+  not_found do
+    redirect to("/")
+  end
+
+  #return the home page
   get '/' do
     erb :index
   end
+
   #  return the page of conversion form
   get "/currency/convert" do
     erb :convert_form
   end
 
-  # the endpoint for saving and converting
+  # the endpoint for  converting then saving
   post "/currency/convert" do
     # the response will be in Json
     content_type :json
     # in case if the request is read by a middleware rewind
     request.body.rewind
-    # check the body state
+    # parse request
     request_payload = JSON.parse(request.body.read)
     from = request_payload["from"]
     to = request_payload["to"]
     amount = request_payload["value"]
+    # request validation
     begin
       amount = Float(amount)
       if from == nil or to == nil or amount == nil or  amount <= 0
@@ -55,7 +63,6 @@ class ApplicationController < Sinatra::Base
       status 400
       generate_response("BAD REQUEST", false)
     end
-
   end
 
   # return the currency conversion history
@@ -63,11 +70,13 @@ class ApplicationController < Sinatra::Base
     erb :convert_history
   end
 
-  # return data
+  # return history to table
   post "/currency/history" do
+    # response format is json
 		content_type :json
+    # rewind the request body if it is read by a middleware
     request.body.rewind
-
+    # parse request and do the validation
 		request_payload = JSON.parse(request.body.read)
     begin
       size = Integer(request_payload["size"])
@@ -77,8 +86,11 @@ class ApplicationController < Sinatra::Base
       page = 1
     end
 		offset = (page - 1) * size
+    # get the total count of saved conversion for pagination purposes
     total_count = CurrencyConvertHistory.all.count
+    # get from database all necessary data
     query_result = CurrencyConvertHistory.all(:offset => offset, :limit => size,:order => [ :created_at.desc ])
+    # return response
     JSON({:count => total_count , :rows => query_result})
   end
 

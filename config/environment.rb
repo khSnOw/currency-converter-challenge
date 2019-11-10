@@ -1,5 +1,4 @@
-# Setting the app envirement
-print "#{ENV['SINATRA_ENV']}"
+# Setting the app environment
 ENV['SINATRA_ENV'] ||= "development"
 ENV['RACK_ENV'] ||= "development"
 # Add the needed requirement to boot the app
@@ -14,7 +13,7 @@ Bundler.require(:default, ENV['SINATRA_ENV'])
 DataMapper::Logger.new($stdout, :debug)
 
 # Setting DataMapper database connection
-DataMapper.setup(:default, 'mysql://root:db_password@127.0.0.1:3306/currency_database')
+DataMapper.setup(:default, 'mysql://root:db_password@db:3306/currency_database')
 
 # configuration of currency converter
 # Create a currency layer for Money

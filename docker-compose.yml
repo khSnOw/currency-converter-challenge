@@ -12,3 +12,15 @@ services:
       - '127.0.0.1:3306:3306'
     expose:
       - '3306'
+  web:
+    build: ./
+    restart: always
+    ports:
+      - 127.0.0.1:8484:9292
+      - 127.0.0.1:8485:9191
+    volumes:
+      - ./:/usr/src/app
+    depends_on:
+      - db
+    # run on 0.0.0.0 to bind the application to all networks interfaces of the container
+    command: "rackup -o 0.0.0.0"
