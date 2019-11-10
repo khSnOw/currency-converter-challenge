@@ -8,6 +8,8 @@
 
 .card-option{
     transition: transform .5s ease;
+    max-width: 18rem;
+    background-color: #6c757d52!important
 }
 
 .content-box {
