@@ -19,7 +19,7 @@ DataMapper::Logger.new($stdout, :debug)
 currency_layer = Money::Bank::CurrencylayerBank.new
 
 # Set the API KEY
-currency_layer.access_key = '2b3b0fa4a03034a15104c6e00b2d35a8'
+currency_layer.access_key = '339211f5d1202fe76e02bb6c3c50415e'
 
 # Update Rates
 currency_layer.update_rates
@@ -42,7 +42,8 @@ begin
   DataMapper.setup(:default, 'mysql://root:db_password@db:3306/currency_database')
   DataMapper.auto_upgrade!
 rescue
-  # if you run local
+  # if you run local 
+  # you can change this string to match your own databse
   DataMapper.setup(:default, 'mysql://root:db_password@127.0.0.1:3306/currency_database')
   DataMapper.auto_upgrade!
 end

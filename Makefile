@@ -3,13 +3,16 @@ default: init
 init: reset-containers up
 
 # Removes all the containers
+# Dash in front of the command means ignore the exit status of the command that is executed (normally, a non-zero exit status would stop that part of the build).
 reset-containers:
-	# Dash in front of the command means ignore the exit status of the command that is executed (normally, a non-zero exit status would stop that part of the build).
 	-docker-compose down --rmi=local --volumes --remove-orphans
 
 # Starts the app locally
 up:
 	docker-compose up -d
+
+down:
+	-docker-compose down  --remove-orphans
 
 # Starts the app locally in live reload mode
 watch-files:
