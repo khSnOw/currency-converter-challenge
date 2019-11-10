@@ -1,3 +1,5 @@
+[v-cloak] {display: none}
+
 .card-option:hover{
     transform: scale(1.1);
 
@@ -6,4 +8,30 @@
 
 .card-option{
     transition: transform .5s ease;
+}
+
+.content-box {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.form-inline .form-control {
+    width: 70% !important;
+}
+
+.form-inline label {
+    width: 30% !important;
+}
+
+.loader {
+    background: url("/images/gears.svg") no-repeat scroll center center gray;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 30000;
+    opacity: 0.8;
+    position: fixed;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
 }

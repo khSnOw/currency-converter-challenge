@@ -1,110 +1,179 @@
-<div class="row" id="wrapper">
-  <div class="col">
-    <form class="form">
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="select_from"> From:</label>
-            <select id="select_from" class="form-control" v-model="currency_convert.from" placeholder="Choose currency">
-              <option v-for="option in options.from_options" :value="option.value">
-                {{option.text}}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
+<div class="container pt-3" id="convert_wrapper">
+  <div class="loader" v-show="uiParams.loading">
 
-            <a  @click="switch_currency()" class="btn btn-primary" style="margin-top: 20%; margin-left: 30%">switch</a>
+  </div>
+  <div class="row justify-content-sm-center" v-cloak>
+    <div class="col-md-8 col-sm-8">
+      <div class="card border-info">
+        <div class="card-header">Convert Currency<a class="btn btn-info" href="/currency/history" style="float: right!important;"> <i class="fa fa-list"> Conversion History</i></a></div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <form class="form-signin">
+                <div class="row" v-if="uiParams.showAlert">
+                  <div class="col">
+                    <div class="alert" :class="uiParams.success ? 'alert-success' : 'alert-danger' " role="alert">
+                      {{uiParams.message}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group form-inline">
+                      <label for="select_from"> From:</label>
+                      <select id="select_from" @change="change_from_handler()" class="form-control" v-model="currency_convert.from" placeholder="Choose currency">
+                        <option v-for="option in options.from_options" :value="option.value">
+                          {{option.text}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <button :disabled="currency_convert.from == null || currency_convert.to == null" @click="switch_currency($event)" class="btn btn-primary">
+                      <i class="fa fa-exchange"></i></button>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-group form-inline">
+                      <label for="select_to"> To:</label>
+                      <select :disabled="currency_convert.from == null" id="select_to" class="form-control" v-model="currency_convert.to" placeholder="Choose currency">
+                        <option v-for="option in options.to_options" :value="option.value">
+                          {{option.text}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-5">
+              <div class="form-group form-inline">
+                <label for="from_input">Value :</label>
+                <input class="form-control" v-model="currency_convert.value" type="number" id="from_input"/>
+              </div>
+            </div>
+            <div class="col-2">
+              <button class="btn btn-primary" @click="convert_currency()"><i class="fa fa-arrow-right"></i></button>
+            </div>
+            <div class="col-5">
+              <div class="form-group form-inline">
+                <label for="result_input">Result :</label>
+                <input class="form-control" v-model="currency_convert.result" type="number" disabled id="result_input"/>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="select_to"> To:</label>
-            <select id="select_to" class="form-control" v-model="currency_convert.to" placeholder="Choose currency">
-              <option v-for="option in options.to_options" :value="option.value">
-                {{option.text}}
-              </option>
-            </select>
-          </div>
-        </div>
-
       </div>
-      <div class="row">
-
-
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="from_input">Value :</label>
-            <input class="form-control" v-model="currency_convert.value" type="number" id="from_input"/>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="form-group">
-
-            <button class="btn btn-primary" style="margin-top: 20%; margin-left: 30%">Convert</button>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="result_input">Result :</label>
-            <input class="form-control" v-model="currency_convert.result" type="number" disabled id="result_input"/>
-          </div>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
 
 <script>
-  var vm = new Vue({
-      el : "#wrapper",
-      data : function (){
-          return {
-              options : {
-                  all_options : [
-                      {
-                          value : "EUR",
-                          text : "EUR"
-                      },
-                      {
-                          value : "USD",
-                          text : "USD"
-                      },
-                      {
-                          value : "CHF",
-                          text : "CHF"
-                      }
-                  ],
-                  from_options : [],
-                  to_options : []
-              },
-              currency_convert : {
-                  "from" : null,
-                  "to" : null,
-                  "result" : 0,
-                  "value" : 0
-              }
-          }
-      },
-      methods : {
-        change_handler : function (){
-            // get only options that should be displayed
-
+    var vm = new Vue({
+        el: "#convert_wrapper",
+        data: function () {
+            return {
+                uiParams: {
+                    loading: false,
+                    message: "",
+                    success: false,
+                    showAlert: false
+                },
+                options: {
+                    all_options: [
+                        {
+                            value: "EUR",
+                            text: "EUR"
+                        },
+                        {
+                            value: "USD",
+                            text: "USD"
+                        },
+                        {
+                            value: "CHF",
+                            text: "CHF"
+                        }
+                    ],
+                    from_options: [],
+                    to_options: []
+                },
+                currency_convert: {
+                    "from": null,
+                    "to": null,
+                    "result": 0,
+                    "value": 0
+                }
+            }
         },
-        switch_currency : function (){
-          const intermediate = this.currency_convert.to;
-          this.currency_convert.to = this.currency_convert.from;
-          this.currency_convert.from =    intermediate;
+        methods: {
+            change_from_handler: function () {
+                // get only options that should be displayed
+                const current_selected = this.currency_convert.from;
+                if (current_selected === "EUR") {
+                    // display all except EURO
+                    this.options.to_options = this.options.all_options.filter(opt => opt.value !== "EUR");
+                } else {
+                    // display only EUR
+                    this.options.to_options = this.options.all_options.filter(opt => opt.value === "EUR");
+                }
+            },
+            switch_currency: function ($event) {
+                $event.preventDefault();
+                const intermediate_options = this.options.to_options;
+                this.options.to_options = this.options.from_options;
+                const intermediate_value = this.currency_convert.to;
+                this.currency_convert.to = this.currency_convert.from;
+                this.currency_convert.from = intermediate_value;
+                this.change_from_handler();
+            },
+            toggleAlert: function (message, status) {
+                this.uiParams.success = status;
+                this.uiParams.message = message;
+                this.uiParams.showAlert = true;
+                let self = this;
+                // in anonymous handlers this object is not the caller
+                setTimeout(() => {
+                    self.uiParams.message = "";
+                    self.uiParams.success = false;
+                    self.uiParams.showAlert = false;
+                }, 2000)
+            },
+            validate: function () {
+                if (this.currency_convert.from == null) {
+                    this.toggleAlert("Choose a source currency !", false);
+                    return false;
+                }
+                if (this.currency_convert.to == null) {
+                    this.toggleAlert("Choose a target currency !", false);
+                    return false;
+                }
+                if (this.currency_convert.value <= 0) {
+                    this.toggleAlert("specify a positive amount!", false);
+                    return false;
+                }
+                return true;
+            },
+            convert_currency: function () {
+                if (this.validate()) {
+
+                    let self = this;
+                    self.uiParams.loading = true;
+                    axios.post("/currency/convert", self.currency_convert)
+                        .then(function (result) {
+                            self.toggleAlert("Conversion done with success !", result.data.success);
+                            self.currency_convert.result = result.data.msg;
+                            self.uiParams.loading = false;
+                        }).catch(function (error) {
+                        self.uiParams.loading = false;
+                        self.toggleAlert(error.response.data.msg, false);
+                    })
+                }
+            }
+        },
+        beforeMount: function () {
+            this.options.from_options = this.options.all_options;
+            this.options.to_options = this.options.all_options;
         }
-      },
-      beforeMount : function (){
-        this.options.from_options = this.options.all_options;
-        this.options.to_options = this.options.all_options;
-      },
-      mounted : function (){
-          console.log("Loaded !")
-      }
-  })
+    })
 </script>

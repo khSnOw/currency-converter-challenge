@@ -26,7 +26,7 @@ class ApplicationController < Sinatra::Base
     from = request_payload["from"]
     to = request_payload["to"]
     amount = request_payload["value"]
-    if from == nil or to == nil or amount == nil or amount < 0
+    if from == nil or to == nil or amount == nil or  Float(amount) <= 0
       status 400
       generate_response("BAD REQUEST", false)
     elsif not %w(EUR CHF USD).include? from or not %w(EUR CHF USD).include? to
@@ -34,6 +34,7 @@ class ApplicationController < Sinatra::Base
       generate_response("NOT SUPPORTED CURRENCY", false)
     else
       begin
+        amount = Float(amount)
         # Try to convert and save
         result = Money.new(amount, from).exchange_to(to).to_f * 100
         # Conversion done Try to store
@@ -63,7 +64,7 @@ class ApplicationController < Sinatra::Base
 
 		request_payload = JSON.parse(request.body.read)
 
-    size = request_payload["size"] == nil ? 10 : request_payload["size"]
+    size = request_payload["size"] == nil ? 10 : Integer(request_payload["size"])
     page = request_payload["page"] == nil ? 1 : request_payload["page"]
 		offset = (page - 1) * size
     total_count = CurrencyConvertHistory.all.count
