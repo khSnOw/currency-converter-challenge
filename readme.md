@@ -8,7 +8,7 @@ After the build the app is available at `http://localhost:8484/`
 
 ### Useful commands
 
-1. To watch for files changes `make watch-files`.
+1. To watch for files changes `make watch-files` live reload available at `http://localhost:8484/` 
 2. To stop the containers run `make down`.
 3. To start again run `make up`
 6. Run tests `make test`
