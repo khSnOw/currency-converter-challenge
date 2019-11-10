@@ -1,4 +1,5 @@
 # Setting the app envirement
+print "#{ENV['SINATRA_ENV']}"
 ENV['SINATRA_ENV'] ||= "development"
 ENV['RACK_ENV'] ||= "development"
 # Add the needed requirement to boot the app
@@ -20,7 +21,7 @@ DataMapper.setup(:default, 'mysql://root:db_password@127.0.0.1:3306/currency_dat
 currency_layer = Money::Bank::CurrencylayerBank.new
 
 # Set the API KEY
-currency_layer.access_key = '4ba8bf592a712c97bb357147c715de03'
+currency_layer.access_key = '2b3b0fa4a03034a15104c6e00b2d35a8'
 
 # Update Rates
 currency_layer.update_rates

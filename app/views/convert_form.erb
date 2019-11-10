@@ -5,7 +5,7 @@
   <div class="row justify-content-sm-center" v-cloak>
     <div class="col-md-8 col-sm-8">
       <div class="card border-info">
-        <div class="card-header">Convert Currency<a class="btn btn-info" href="/currency/history" style="float: right!important;"> <i class="fa fa-list"> Conversion History</i></a></div>
+        <div class="card-header"><a class="btn btn-primary btn-sm" href="/"> <i class="fa fa-home"></i></a> Convert Currency<a class="btn btn-info btn-sm" href="/currency/history" style="float: right!important;"> <i class="fa fa-list"> Conversion History</i></a></div>
         <div class="card-body">
           <div class="row">
             <div class="col">
@@ -117,10 +117,14 @@
                     // display only EUR
                     this.options.to_options = this.options.all_options.filter(opt => opt.value === "EUR");
                 }
+                const self = this;
+                const exist = this.options.to_options.findIndex(item => item.value === self.currency_convert.to) !== -1;
+                if (!exist){
+                    this.currency_convert.to = null;
+                }
             },
             switch_currency: function ($event) {
                 $event.preventDefault();
-                const intermediate_options = this.options.to_options;
                 this.options.to_options = this.options.from_options;
                 const intermediate_value = this.currency_convert.to;
                 this.currency_convert.to = this.currency_convert.from;

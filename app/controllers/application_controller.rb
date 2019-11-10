@@ -26,30 +26,36 @@ class ApplicationController < Sinatra::Base
     from = request_payload["from"]
     to = request_payload["to"]
     amount = request_payload["value"]
-    if from == nil or to == nil or amount == nil or  Float(amount) <= 0
+    begin
+      amount = Float(amount)
+      if from == nil or to == nil or amount == nil or  amount <= 0
+        status 400
+        generate_response("BAD REQUEST", false)
+      elsif not %w(EUR CHF USD).include? from or not %w(EUR CHF USD).include? to
+        status 400
+        generate_response("NOT SUPPORTED CURRENCY", false)
+      else
+        begin
+          # Try to convert and save
+          result = Money.new(amount, from).exchange_to(to).to_f * 100
+          # Conversion done Try to store
+          history_item = CurrencyConvertHistory.create(
+              :from => from,
+              :to => to,
+              :value => amount,
+              :result => result)
+          history_item.save
+          generate_response(result, true)
+        rescue StandardError
+          status 400
+          generate_response("ERROR OCCURRED! TRY LATER", false)
+        end
+      end
+    rescue ArgumentError
       status 400
       generate_response("BAD REQUEST", false)
-    elsif not %w(EUR CHF USD).include? from or not %w(EUR CHF USD).include? to
-      status 400
-      generate_response("NOT SUPPORTED CURRENCY", false)
-    else
-      begin
-        amount = Float(amount)
-        # Try to convert and save
-        result = Money.new(amount, from).exchange_to(to).to_f * 100
-        # Conversion done Try to store
-        history_item = CurrencyConvertHistory.create(
-            :from => from,
-            :to => to,
-            :value => amount,
-            :result => result)
-				history_item.save
-        generate_response(result, true)
-      rescue StandardError
-        status 400
-        generate_response("ERROR OCCURRED! TRY LATER", false)
-      end
     end
+
   end
 
   # return the currency conversion history
@@ -63,9 +69,13 @@ class ApplicationController < Sinatra::Base
     request.body.rewind
 
 		request_payload = JSON.parse(request.body.read)
-
-    size = request_payload["size"] == nil ? 10 : Integer(request_payload["size"])
-    page = request_payload["page"] == nil ? 1 : request_payload["page"]
+    begin
+      size = Integer(request_payload["size"])
+      page = Integer(request_payload["page"])
+    rescue TypeError, ArgumentError
+      size = 5
+      page = 1
+    end
 		offset = (page - 1) * size
     total_count = CurrencyConvertHistory.all.count
     query_result = CurrencyConvertHistory.all(:offset => offset, :limit => size,:order => [ :created_at.desc ])
