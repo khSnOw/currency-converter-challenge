@@ -35,7 +35,7 @@
                   <div class="col-5">
                     <div class="form-group form-inline">
                       <label for="select_to"> To:</label>
-                      <select :disabled="currency_convert.from == null" id="select_to" class="form-control" v-model="currency_convert.to" placeholder="Choose currency">
+                      <select @change="change_to_handler()" :disabled="currency_convert.from == null" id="select_to" class="form-control" v-model="currency_convert.to" placeholder="Choose currency">
                         <option v-for="option in options.to_options" :value="option.value">
                           {{option.text}}
                         </option>
@@ -50,7 +50,7 @@
             <div class="col-5">
               <div class="form-group form-inline">
                 <label for="from_input">Value :</label>
-                <input class="form-control" v-model="currency_convert.value" type="number" id="from_input"/>
+                <input class="form-control" @keyup="value_change_handler()"  v-model="currency_convert.value" type="number" id="from_input"/>
               </div>
             </div>
             <div class="col-2">

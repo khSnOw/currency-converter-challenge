@@ -35,8 +35,12 @@ var vm = new Vue({
         }
     },
     methods: {
+        change_to_handler : function (){
+          this.currency_convert.result = 0;
+        },
         change_from_handler: function () {
             // get only options that should be displayed
+            this.currency_convert.result = 0;
             const current_selected = this.currency_convert.from;
             if (current_selected === "EUR") {
                 // display all except EURO
@@ -53,11 +57,15 @@ var vm = new Vue({
         },
         switch_currency: function ($event) {
             $event.preventDefault();
+            this.currency_convert.result = 0;
             this.options.to_options = this.options.from_options;
             const intermediate_value = this.currency_convert.to;
             this.currency_convert.to = this.currency_convert.from;
             this.currency_convert.from = intermediate_value;
             this.change_from_handler();
+        },
+        value_change_handler : function (){
+            this.currency_convert.result = 0;
         },
         toggleAlert: function (message, status) {
             this.uiParams.success = status;
