@@ -1,4 +1,7 @@
 [v-cloak] {display: none}
+body {
+    background-color: #e9ecf3;
+}
 
 .card-option:hover{
     transform: scale(1.1);
@@ -17,6 +20,14 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
+.card-light{
+    box-shadow:0 2px 3px 8px rgba(0,0,0,.03);
+    background-color: #fff;
+
+}
+.card-padding{
+    padding: 12px 20px 15px;
+}
 .form-inline .form-control {
     width: 70% !important;
 }
@@ -41,4 +52,12 @@
 
 .card-option-image{
     height: 17em !important;
+}
+
+.bottom-margin-2 {
+    margin-bottom: 2em !important;
+}
+
+.title-color-blue{
+    color : #4c87b9;
 }
