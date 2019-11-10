@@ -1,4 +1,4 @@
-<div class="container pt-3">
+<div class="container pt-5">
   <div class="row justify-content-sm-center" id="history_wrapper" v-cloak>
     <div class="col-10">
       <div class="card border-info">
@@ -13,10 +13,10 @@
               </div>
             </div>
             <div class="row justify-content-end">
-              <div class="col-4">
+              <div class="col-5">
                 <div class="form-group form-inline">
-                  <label for="table_size">Size</label>
-                  <select class="form-control" id="table_size" v-model="tableOptions.size" @change="handleSizeChange()">
+                  <label for="table_size" style="width: 35% !important;">Rows per page</label>
+                  <select style="width: 65% !important;" class="form-control" id="table_size" v-model="tableOptions.size" @change="handleSizeChange()">
                     <option value=5>
                       5
                     </option>

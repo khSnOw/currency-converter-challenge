@@ -9,7 +9,8 @@
 .card-option{
     transition: transform .5s ease;
     max-width: 18rem;
-    background-color: #6c757d52!important
+    background-color: #6c757d00!important;
+    border: none !important;
 }
 
 .content-box {
@@ -36,4 +37,8 @@
     margin: 0;
     top: 0;
     left: 0;
+}
+
+.card-option-image{
+    height: 17em !important;
 }

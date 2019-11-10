@@ -12,8 +12,7 @@ Bundler.require(:default, ENV['SINATRA_ENV'])
 # Attach database logging to the stdout
 DataMapper::Logger.new($stdout, :debug)
 
-# Setting DataMapper database connection
-DataMapper.setup(:default, 'mysql://root:db_password@db:3306/currency_database')
+
 
 # configuration of currency converter
 # Create a currency layer for Money
@@ -37,6 +36,13 @@ require_all 'app/helpers'
 require_all 'app/models'
 require_all 'app/controllers'
 
-
-# migrate database after loading all files
-DataMapper.auto_upgrade!
+# Setting DataMapper database connection and migrate database
+begin
+  # if you run from docker
+  DataMapper.setup(:default, 'mysql://root:db_password@db:3306/currency_database')
+  DataMapper.auto_upgrade!
+rescue
+  # if you run local
+  DataMapper.setup(:default, 'mysql://root:db_password@127.0.0.1:3306/currency_database')
+  DataMapper.auto_upgrade!
+end

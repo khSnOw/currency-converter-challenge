@@ -1,15 +1,19 @@
 <div class="container pt-3">
+	<div class="row justify-content-center">
+		<div class="col-10 text-center">
+			<h2>Welcome to currency converter !</h2>
+		</div>
+	</div>
 	<div class="row justify-content-sm-center" >
 		<div class="col-10">
 			<div class="card border-info">
-				<div class="card-header text-center">welcome to currency converter !</div>
 				<div class="card-body">
-					<div class="col">
+					<div class="container pt-3">
 						<div class="row">
 							<div class="col-6 d-flex justify-content-center">
 								<div onclick="go_to('/currency/convert')" class="card border-secondary mb-3 card-option" >
 									<div class="card-body">
-										<img width="100%" src="images/currency.svg" alt="currency_image">
+										<img width="100%" src="images/currency.svg" alt="currency_image" class="card-option-image">
 										<h3 class="text-center">Currency exchange</h3>
 									</div>
 								</div>
@@ -17,7 +21,7 @@
 							<div class="col-6 d-flex justify-content-center">
 								<div onclick="go_to('/currency/history')" class="card border-secondary mb-3 card-option">
 									<div class="card-body">
-										<img width="100%" src="images/clipboards.svg" alt="currency_image">
+										<img width="100%" src="images/clipboards.svg" alt="history_image" class="card-option-image">
 										<h3 class="text-center">Conversion history</h3>
 									</div>
 								</div>
